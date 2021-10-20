@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using CDR.DataRecipient.SDK.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using CDR.DataRecipient.SDK.Models;
 
-namespace CDR.DataRecipient.Repository.SQLite
+namespace CDR.DataRecipient.Repository.SQL
 {
-    public interface ISqliteDataAccess
+    public interface ISqlDataAccess
     {
-        bool SqliteCreateDatabase();        
+        bool SqlCreateDatabase();        
         bool RecreateDatabaseWithForTests();
         Task DeleteCdrArrangementData();
         Task DeleteRegistrationData();        

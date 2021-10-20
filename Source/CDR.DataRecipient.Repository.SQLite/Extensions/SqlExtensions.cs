@@ -1,14 +1,14 @@
+using Microsoft.Data.SqlClient;
 using System;
-using Microsoft.Data.Sqlite;
 
-namespace CDR.DataRecipient.Repository.SQLite.Extensions
+namespace CDR.DataRecipient.Repository.SQL.Extensions
 {
-    static public class SqLiteExtensions
+    static public class SqLExtensions
     {
         /// <summary>
         /// Execute scalar command and return result as Int32. Throw error if no results or conversion error
         /// </summary>
-        static public Int32 ExecuteScalarInt32(this SqliteCommand command)
+        static public Int32 ExecuteScalarInt32(this SqlCommand command)
         {
             var res = command.ExecuteScalar();
 
@@ -23,7 +23,7 @@ namespace CDR.DataRecipient.Repository.SQLite.Extensions
         /// <summary>
         /// Execute scalar command and return result as string. Throw error if no results or conversion error
         /// </summary>
-        static public string ExecuteScalarString(this SqliteCommand command)
+        static public string ExecuteScalarString(this SqlCommand command)
         {
             var res = command.ExecuteScalar();
 
@@ -36,23 +36,23 @@ namespace CDR.DataRecipient.Repository.SQLite.Extensions
         }
 
         // TODO - Should really be using command parameters re sql injection (see callers), but this extension method only for testing purposes
-        static public Int32 ExecuteScalarInt32(this SqliteConnection connection, string sql)
+        static public Int32 ExecuteScalarInt32(this SqlConnection connection, string sql)
         {
-            using var command = new SqliteCommand(sql, connection);
+            using var command = new SqlCommand(sql, connection);
             return command.ExecuteScalarInt32();
         }
 
         // TODO - Should really be using command parameters re sql injection (see callers), but this extension method only for testing purposes
-        static public string ExecuteScalarString(this SqliteConnection connection, string sql)
+        static public string ExecuteScalarString(this SqlConnection connection, string sql)
         {
-            using var command = new SqliteCommand(sql, connection);
+            using var command = new SqlCommand(sql, connection);
             return command.ExecuteScalarString();
         }
 
         // TODO - Should really be using command parameters re sql injection (see callers), but this extension method only for testing purposes
-        static public void ExecuteNonQuery(this SqliteConnection connection, string sql)
+        static public void ExecuteNonQuery(this SqlConnection connection, string sql)
         {
-            using var command = new SqliteCommand(sql, connection);
+            using var command = new SqlCommand(sql, connection);
             command.ExecuteNonQuery();
         }
     }

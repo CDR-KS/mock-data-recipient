@@ -1,34 +1,32 @@
-﻿using System;
+﻿using CDR.DataRecipient.Models;
+using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using CDR.DataRecipient.Models;
-using Microsoft.Data.Sqlite;
-using Microsoft.Extensions.Configuration;
 
-namespace CDR.DataRecipient.Repository.SQLite
+namespace CDR.DataRecipient.Repository.SQL
 {
-    public class SqliteConsentsRepository : IConsentsRepository
+    public class SqlConsentsRepository : IConsentsRepository
     {
         protected readonly IConfiguration _config;
 
-        public SqliteDataAccess SqliteDataAccess { get; }
+        public SqlDataAccess _sqlDataAccess { get; }
 
-        public SqliteConsentsRepository(IConfiguration config)
+        public SqlConsentsRepository(IConfiguration config)
         {
             _config = config;
-            SqliteDataAccess = new SqliteDataAccess(_config);
+            _sqlDataAccess = new SqlDataAccess(_config);
         }
         public async Task<ConsentArrangement> GetConsent(string cdrArrangementId)
         {            
-            var dataHolderBrand = await SqliteDataAccess.GetConsent(cdrArrangementId);
+            var dataHolderBrand = await _sqlDataAccess.GetConsent(cdrArrangementId);
             return dataHolderBrand;
         }
 
         public async Task<IEnumerable<ConsentArrangement>> GetConsents()
         {                        
-            var cdrArrangements = await SqliteDataAccess.GetConsents();
+            var cdrArrangements = await _sqlDataAccess.GetConsents();
             return cdrArrangements.OrderByDescending(x => x.CreatedOn);
         }
 
@@ -38,11 +36,11 @@ namespace CDR.DataRecipient.Repository.SQLite
             if (existingArrangement == null)
             {
                 
-                await SqliteDataAccess.InsertCdrArrangement(consentArrangement);
+                await _sqlDataAccess.InsertCdrArrangement(consentArrangement);
                 return;
             }
             
-            await SqliteDataAccess.UpdateCdrArrangement(consentArrangement);            
+            await _sqlDataAccess.UpdateCdrArrangement(consentArrangement);            
         }
 
         public async Task UpdateTokens(string cdrArrangementId, string idToken, string accessToken, string refreshToken)
@@ -52,7 +50,7 @@ namespace CDR.DataRecipient.Repository.SQLite
             consent.AccessToken = accessToken;
             consent.RefreshToken = refreshToken;
             
-            await SqliteDataAccess.UpdateCdrArrangement(consent);
+            await _sqlDataAccess.UpdateCdrArrangement(consent);
         }
 
         public async Task DeleteConsent(string cdrArrangementId)
@@ -61,7 +59,7 @@ namespace CDR.DataRecipient.Repository.SQLite
 
             if (!string.IsNullOrEmpty(consent?.CdrArrangementId))
             {
-                await SqliteDataAccess.DeleteConsent(cdrArrangementId);
+                await _sqlDataAccess.DeleteConsent(cdrArrangementId);
             }            
         }
 
@@ -72,7 +70,7 @@ namespace CDR.DataRecipient.Repository.SQLite
             if (!string.IsNullOrEmpty(consent?.CdrArrangementId) && 
                 string.Equals(consent?.DataHolderBrandId, dataHolderBrandId, StringComparison.OrdinalIgnoreCase))
             {
-                await SqliteDataAccess.DeleteConsent(cdrArrangementId);
+                await _sqlDataAccess.DeleteConsent(cdrArrangementId);
                 return true;
             }
             return false;
