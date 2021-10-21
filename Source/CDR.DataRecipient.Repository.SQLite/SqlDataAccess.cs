@@ -62,7 +62,7 @@ namespace CDR.DataRecipient.Repository.SQL
                 {
                     ConsentArrangement cdrArrangement = new ConsentArrangement();
 
-                    var CdrArrangementId = reader.GetString(0);
+                    var CdrArrangementId = reader.GetGuid(0);
                     var JsonDocument = reader.GetString(1);
 
                     var jsonDocument = Convert.ToString(JsonDocument);
@@ -200,7 +200,7 @@ namespace CDR.DataRecipient.Repository.SQL
                 {
                     Registration registration = new Registration();
 
-                    var CdrArrangementId = reader.GetString(0);
+                    var CdrArrangementId = reader.GetGuid(0);
                     var JsonDocument = reader.GetString(1);
 
                     var jsonDocument = Convert.ToString(JsonDocument);                    
@@ -378,9 +378,9 @@ namespace CDR.DataRecipient.Repository.SQL
                 db.Open();
 
                 //Purging all exsiting data
-                string sqliteCommandText = @"IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='CdrArrangement' AND xtype='U') DROP TABLE IF EXISTS CdrArrangement; 
-                                             IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='DataHolderBrand' AND xtype='U') DROP TABLE IF EXISTS DataHolderBrand; 
-                                             IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Registration' AND xtype='U') DROP TABLE IF EXISTS Registration;";
+                string sqliteCommandText = @"IF EXISTS (SELECT * FROM sysobjects WHERE name='CdrArrangement' AND xtype='U') DROP TABLE IF EXISTS CdrArrangement; 
+                                             IF EXISTS (SELECT * FROM sysobjects WHERE name='DataHolderBrand' AND xtype='U') DROP TABLE IF EXISTS DataHolderBrand; 
+                                             IF EXISTS (SELECT * FROM sysobjects WHERE name='Registration' AND xtype='U') DROP TABLE IF EXISTS Registration;";
 
                 SqlCommand SqlCommand = new SqlCommand(sqliteCommandText, db);
                 SqlCommand.ExecuteNonQuery();
@@ -471,17 +471,20 @@ namespace CDR.DataRecipient.Repository.SQL
 
                 using var commandText = new SqlCommand($"SELECT DataHolderBrandId, JsonDocument FROM DataHolderBrand", db);
                 SqlDataReader reader = commandText.ExecuteReader();
-                while (reader.Read())
+                if (reader.HasRows)
                 {
-                    DataHolderBrand dataHolderBrand = new DataHolderBrand();
-                    
-                    var DataHolderBrandId = reader.GetString(0);
-                    var DataHolderBrandjson = reader.GetString(1);
+                    while (reader.Read())
+                    {
+                        DataHolderBrand dataHolderBrand = new DataHolderBrand();
 
-                    var jsonDocument = Convert.ToString(DataHolderBrandjson);                    
-                    dataHolderBrand = System.Text.Json.JsonSerializer.Deserialize<DataHolderBrand>(jsonDocument);
+                        var DataHolderBrandId = reader.GetGuid(0);
+                        var DataHolderBrandjson = reader.GetString(1);
 
-                    dataHolderBrands.Add(dataHolderBrand);
+                        var jsonDocument = Convert.ToString(DataHolderBrandjson);
+                        dataHolderBrand = System.Text.Json.JsonSerializer.Deserialize<DataHolderBrand>(jsonDocument);
+
+                        dataHolderBrands.Add(dataHolderBrand);
+                    }
                 }
 
                 db.Close();
