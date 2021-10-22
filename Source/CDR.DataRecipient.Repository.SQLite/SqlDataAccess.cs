@@ -26,25 +26,32 @@ namespace CDR.DataRecipient.Repository.SQL
         #region CdrArragements
         public async Task<ConsentArrangement> GetConsent(string cdrArrangementId)
         {
-            using (SqlConnection db = new SqlConnection(_dbConn))
+            try
             {
-                db.Open();
-
-                using var selectCommand = new SqlCommand($"SELECT JsonDocument FROM CdrArrangement WHERE CdrArrangementId = @id", db);
-                selectCommand.Parameters.AddWithValue("@id", cdrArrangementId);
-
-                var res = selectCommand.ExecuteScalar();
-                if (!string.IsNullOrEmpty(Convert.ToString(res))) 
+                using (SqlConnection db = new SqlConnection(_dbConn))
                 {
-                    var jsonDocument = Convert.ToString(res);
+                    db.Open();
 
-                    //var consentArrangement1 = System.Text.Json.JsonSerializer.Deserialize<ConsentArrangement>(jsonDocument);
-                    var consentArrangement = JsonConvert.DeserializeObject<ConsentArrangement>(jsonDocument, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                    using var selectCommand = new SqlCommand($"SELECT JsonDocument FROM CdrArrangement WHERE CdrArrangementId = @id", db);
+                    selectCommand.Parameters.AddWithValue("@id", cdrArrangementId);
+
+                    var res = selectCommand.ExecuteScalar();
+                    if (!string.IsNullOrEmpty(Convert.ToString(res))) 
+                    {
+                        var jsonDocument = Convert.ToString(res);
+
+                        //var consentArrangement1 = System.Text.Json.JsonSerializer.Deserialize<ConsentArrangement>(jsonDocument);
+                        var consentArrangement = JsonConvert.DeserializeObject<ConsentArrangement>(jsonDocument, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                     
-                    db.Close();
+                        db.Close();
 
-                    return consentArrangement;
+                        return consentArrangement;
+                    }
                 }
+            }
+            catch (Exception)
+            {
+                return null;
             }
             return null;
         }
@@ -418,7 +425,7 @@ namespace CDR.DataRecipient.Repository.SQL
                 SqlCommand.CommandText = $"INSERT INTO DataHolderBrand (DataHolderBrandId, JsonDocument) VALUES ('{brandId}','{jsonDocument}')";
                 SqlCommand.ExecuteNonQuery();
 
-                //Insert cdr-aggranamgnets data for testing
+                //Insert cdr-arrangments data for testing
                 var cdrArranamgentId = "92d260c1-a625-41e2-a777-c0af1912a74a";
                 jsonDocument = @"{""_id"":{""$oid"":""613ef5b11a0ee5d9fd426a99""},""DataHolderBrandId"":""804fc2fb-18a7-4235-9a49-2af393d18bc7"",""ClientId"":null,""SharingDuration"":null,""CdrArrangementId"":""92d260c1-a625-41e2-a777-c0af1912a74a"",""IdToken"":null,""AccessToken"":null,""RefreshToken"":null,""ExpiresIn"":null,""Scope"":null,""TokenType"":null,""CreatedOn"":null}"; 
                 SqlCommand.CommandText = $"INSERT INTO CdrArrangement (CdrArrangementId, JsonDocument) VALUES ('{cdrArranamgentId}','{jsonDocument}')";

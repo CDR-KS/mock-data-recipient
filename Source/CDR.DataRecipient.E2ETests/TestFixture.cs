@@ -1,6 +1,6 @@
+using Microsoft.Data.SqlClient;
 using System;
 using System.Threading.Tasks;
-using Microsoft.Data.Sqlite;
 using Xunit;
 
 #nullable enable
@@ -13,10 +13,10 @@ namespace CDR.DataRecipient.E2ETests
         {
             static void PatchRegister()
             {
-                using var connection = new SqliteConnection(BaseTest.REGISTER_CONNECTIONSTRING);
+                using var connection = new SqlConnection(BaseTest.REGISTER_CONNECTIONSTRING);
                 connection.Open();
 
-                using var updateCommand = new SqliteCommand(@"
+                using var updateCommand = new SqlCommand(@"
                     update 
                         softwareproduct
                     set 
@@ -29,7 +29,7 @@ namespace CDR.DataRecipient.E2ETests
                     connection);
                 updateCommand.ExecuteNonQuery();
 
-                using var updateCommand2 = new SqliteCommand(@"
+                using var updateCommand2 = new SqlCommand(@"
                     update
                         endpoint
                     set 
@@ -42,14 +42,14 @@ namespace CDR.DataRecipient.E2ETests
                 updateCommand2.ExecuteNonQuery();
             }
 
-            static void Purge(SqliteConnection connection, string table)
+            static void Purge(SqlConnection connection, string table)
             {
                 // Delete all rows from table
-                using var deleteCommand = new SqliteCommand($"delete from {table}", connection);
+                using var deleteCommand = new SqlCommand($"delete from {table}", connection);
                 deleteCommand.ExecuteNonQuery();
 
                 // Check all rows deleted
-                using var selectCommand = new SqliteCommand($"select count(*) from {table}", connection);
+                using var selectCommand = new SqlCommand($"select count(*) from {table}", connection);
                 var count = Convert.ToInt32(selectCommand.ExecuteScalar());
                 if (count != 0)
                 {
@@ -59,7 +59,7 @@ namespace CDR.DataRecipient.E2ETests
 
             static void PurgeMDR()
             {
-                using var mdrConnection = new SqliteConnection(BaseTest.DATARECIPIENT_CONNECTIONSTRING);
+                using var mdrConnection = new SqlConnection(BaseTest.DATARECIPIENT_CONNECTIONSTRING);
                 mdrConnection.Open();
 
                 Purge(mdrConnection, "CdrArrangement");
@@ -69,7 +69,7 @@ namespace CDR.DataRecipient.E2ETests
 
             static void PurgeMDHIdentityServer()
             {
-                using var mdhIdentityServerConnection = new SqliteConnection(BaseTest.DATAHOLDER_IDENTITYSERVER_CONNECTIONSTRING);
+                using var mdhIdentityServerConnection = new SqlConnection(BaseTest.DATAHOLDER_IDENTITYSERVER_CONNECTIONSTRING);
                 mdhIdentityServerConnection.Open();
 
                 // Purge(mdhIdentityServerConnection, "ApiResourceClaims");
