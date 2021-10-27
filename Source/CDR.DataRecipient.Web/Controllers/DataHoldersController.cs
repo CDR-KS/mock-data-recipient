@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using CDR.DataRecipient.Web.Configuration;
 using CDR.DataRecipient.Repository;
 using CDR.DataRecipient.SDK.Services.Register;
+using Serilog.Context;
 
 namespace CDR.DataRecipient.Web.Controllers
 {
@@ -40,7 +41,10 @@ namespace CDR.DataRecipient.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            _logger.LogInformation($"GET request: {nameof(DataHoldersController)}.{nameof(Index)}");
+            using (LogContext.PushProperty("MethodName", ControllerContext.RouteData.Values["action"].ToString()))
+            {
+                _logger.LogInformation($"Received GET request to {ControllerContext.RouteData.Values["action"]}");
+            }
 
             var model = new DataHoldersModel();
             await PopulateModel(model);
@@ -50,7 +54,10 @@ namespace CDR.DataRecipient.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(DataHoldersModel model)
         {
-            _logger.LogInformation($"POST request: {nameof(DataHoldersController)}.{nameof(Index)}");
+            using (LogContext.PushProperty("MethodName", ControllerContext.RouteData.Values["action"].ToString()))
+            {
+                _logger.LogInformation($"Received POST request to {ControllerContext.RouteData.Values["action"]}");
+            }
 
             await GetDataHolderBrands(model);
             return View(model);

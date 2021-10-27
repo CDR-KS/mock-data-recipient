@@ -1,12 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
-using CDR.DataRecipient.SDK.Services.Register;
+﻿using CDR.DataRecipient.SDK.Services.Register;
 using CDR.DataRecipient.Web.Configuration;
 using CDR.DataRecipient.Web.Configuration.Models;
 using CDR.DataRecipient.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Serilog.Context;
+using System.Threading.Tasks;
 
 namespace CDR.DataRecipient.Web.Controllers
 {
@@ -41,6 +41,10 @@ namespace CDR.DataRecipient.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(SsaModel model)
         {
+            using (LogContext.PushProperty("MethodName", ControllerContext.RouteData.Values["action"].ToString()))
+            {
+                _logger.LogInformation($"Received request to {ControllerContext.RouteData.Values["action"]}");
+            }
             await GetSSA(model);
             return View(model);
         }

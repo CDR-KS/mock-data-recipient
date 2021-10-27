@@ -18,6 +18,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Serilog.Context;
 
 namespace CDR.DataRecipient.Web.Controllers
 {
@@ -59,7 +60,10 @@ namespace CDR.DataRecipient.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(string clientId = null)
         {
-            _logger.LogInformation($"GET request: {nameof(DynamicClientRegistrationController)}.{nameof(Index)}");
+            using (LogContext.PushProperty("MethodName", ControllerContext.RouteData.Values["action"].ToString()))
+            {
+                _logger.LogInformation($"Received GET request to {ControllerContext.RouteData.Values["action"]}");
+            }
 
             var model = new DynamicClientRegistrationModel();
 
@@ -80,7 +84,10 @@ namespace CDR.DataRecipient.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(DynamicClientRegistrationModel model)
         {
-            _logger.LogInformation($"POST request: {nameof(DynamicClientRegistrationController)}.{nameof(Index)}");
+            using (LogContext.PushProperty("MethodName", ControllerContext.RouteData.Values["action"].ToString()))
+            {
+                _logger.LogInformation($"Received POST request to {ControllerContext.RouteData.Values["action"]}");
+            }
 
             if (string.IsNullOrEmpty(model.ClientId))
             {
@@ -99,7 +106,10 @@ namespace CDR.DataRecipient.Web.Controllers
         [Route("registrations/{clientId}")]
         public async Task<IActionResult> Delete(string clientId)
         {
-            _logger.LogInformation($"DELETE request: {nameof(DynamicClientRegistrationController)}.{nameof(Delete)}");
+            using (LogContext.PushProperty("MethodName", ControllerContext.RouteData.Values["action"].ToString()))
+            {
+                _logger.LogInformation($"Received DELETE request to {ControllerContext.RouteData.Values["action"]} - {clientId}");
+            }
 
             // Delete the registration from the data holder.
             var deleteResponse = await DeleteRegistration(clientId);
@@ -126,7 +136,10 @@ namespace CDR.DataRecipient.Web.Controllers
         [Route("registrations/{clientId}")]
         public async Task<IActionResult> Get(string clientId)
         {
-            _logger.LogInformation($"GET request: {nameof(DynamicClientRegistrationController)}.{nameof(GetRegistration)} - {clientId}");
+            using (LogContext.PushProperty("MethodName", ControllerContext.RouteData.Values["action"].ToString()))
+            {
+                _logger.LogInformation($"Received GET request to {ControllerContext.RouteData.Values["action"]} - {clientId}");
+            }
 
             var reg = await GetRegistration(clientId);
             var response = new

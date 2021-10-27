@@ -6,6 +6,7 @@ using CDR.DataRecipient.Web.Configuration;
 using CDR.DataRecipient.SDK.Extensions;
 using System;
 using CDR.DataRecipient.SDK.Register;
+using Serilog.Context;
 
 namespace CDR.DataRecipient.Web.Controllers
 {
@@ -58,6 +59,11 @@ RIj2P/wtcJRnuztcszBJsnt7NQ==
         [Route("id-token")]
         public IActionResult IdToken()
         {
+            using (LogContext.PushProperty("MethodName", ControllerContext.RouteData.Values["action"].ToString()))
+            {
+                _logger.LogInformation($"Received GET request to {ControllerContext.RouteData.Values["action"]}");
+            }
+
             var model = new IdTokenModel();
             return View(model);
         }
@@ -66,6 +72,11 @@ RIj2P/wtcJRnuztcszBJsnt7NQ==
         [Route("id-token")]
         public IActionResult IdToken(IdTokenModel model)
         {
+            using (LogContext.PushProperty("MethodName", ControllerContext.RouteData.Values["action"].ToString()))
+            {
+                _logger.LogInformation($"Received POST request to {ControllerContext.RouteData.Values["action"]}");
+            }
+
             var sp = _config.GetSoftwareProductConfig();
 
             if (string.IsNullOrEmpty(model.IdTokenEncrypted))
@@ -83,6 +94,11 @@ RIj2P/wtcJRnuztcszBJsnt7NQ==
         [Route("private-key-jwt")]
         public IActionResult PrivateKeyJwt()
         {
+            using (LogContext.PushProperty("MethodName", ControllerContext.RouteData.Values["action"].ToString()))
+            {
+                _logger.LogInformation($"Received GET request to {ControllerContext.RouteData.Values["action"]}");
+            }
+
             var model = new PrivateKeyJwtModel();
             SetDefaults(model);
             return View(model);
@@ -92,6 +108,11 @@ RIj2P/wtcJRnuztcszBJsnt7NQ==
         [Route("private-key-jwt")]
         public IActionResult PrivateKeyJwt(PrivateKeyJwtModel model)
         {
+            using (LogContext.PushProperty("MethodName", ControllerContext.RouteData.Values["action"].ToString()))
+            {
+                _logger.LogInformation($"Received POST request to {ControllerContext.RouteData.Values["action"]}");
+            }
+
             var sp = _config.GetSoftwareProductConfig();
             var privateKeyFormatted = FormatPrivateKey(model.PrivateKey);
             var privateKeyJwt = new PrivateKeyJwt(privateKeyFormatted);

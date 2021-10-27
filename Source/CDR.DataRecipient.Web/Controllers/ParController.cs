@@ -12,6 +12,7 @@ using CDR.DataRecipient.Web.Configuration;
 using CDR.DataRecipient.Web.Common;
 using Microsoft.Extensions.Caching.Memory;
 using System.Collections.Generic;
+using Serilog.Context;
 
 namespace CDR.DataRecipient.Web.Controllers
 {
@@ -59,6 +60,11 @@ namespace CDR.DataRecipient.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(ParModel model)
         {
+            using (LogContext.PushProperty("MethodName", ControllerContext.RouteData.Values["action"].ToString()))
+            {
+                _logger.LogInformation($"Received POST request to {ControllerContext.RouteData.Values["action"]}");
+            }
+
             if (!string.IsNullOrEmpty(model.ClientId))
             {
                 var reg = await _registrationsRepository.GetRegistration(model.ClientId);
