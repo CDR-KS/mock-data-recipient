@@ -1,19 +1,16 @@
-﻿using System;
-using System.IO;
-using CDR.DataRecipient.Repository;
-using CDR.DataRecipient.Repository.SQLite;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
 using Serilog;
+using System;
+using System.IO;
 
-namespace CDR.DataRecipient.Repository.SQLite.UnitTests
+namespace CDR.DataRecipient.Repository.SQL.UnitTests
 {
-    public class SqliteDataFixture
+    public class SqlDataFixture
     {
         public IServiceProvider ServiceProvider { get; set; }
 
-        public SqliteDataFixture()
+        public SqlDataFixture()
         {            
             IConfiguration configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
@@ -34,10 +31,10 @@ namespace CDR.DataRecipient.Repository.SQLite.UnitTests
             services.AddLogging(loggingBuilder =>
                 loggingBuilder.AddSerilog(dispose: true));
 
-            services.AddSingleton<ISqliteDataAccess>(x => new SqliteDataAccess(configuration));
-            services.AddSingleton<IDataHoldersRepository>(x => new SqliteDataHoldersRepository(configuration));
-            services.AddSingleton<IConsentsRepository>(x => new SqliteConsentsRepository(configuration));
-            services.AddSingleton<IRegistrationsRepository>(x => new SqliteRegistrationsRepository(configuration));
+            services.AddSingleton<ISqlDataAccess>(x => new SqlDataAccess(configuration));
+            services.AddSingleton<IDataHoldersRepository>(x => new SqlDataHoldersRepository(configuration));
+            services.AddSingleton<IConsentsRepository>(x => new SqlConsentsRepository(configuration));
+            services.AddSingleton<IRegistrationsRepository>(x => new SqlRegistrationsRepository(configuration));
 
             this.ServiceProvider = services.BuildServiceProvider();
 

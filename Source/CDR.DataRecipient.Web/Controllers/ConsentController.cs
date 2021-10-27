@@ -16,6 +16,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Serilog.Context;
 using static CDR.DataRecipient.SDK.Constants;
 
 namespace CDR.DataRecipient.Web.Controllers
@@ -55,7 +56,10 @@ namespace CDR.DataRecipient.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            _logger.LogInformation($"GET request: {nameof(ConsentController)}.{nameof(Index)}");
+            using (LogContext.PushProperty("MethodName", ControllerContext.RouteData.Values["action"].ToString()))
+            {
+                _logger.LogInformation($"Received GET request to {ControllerContext.RouteData.Values["action"]}");
+            }
 
             var model = new ConsentModel();
             SetDefaults(model);
@@ -66,7 +70,10 @@ namespace CDR.DataRecipient.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(ConsentModel model)
         {
-            _logger.LogInformation($"POST request: {nameof(ConsentController)}.{nameof(Index)}");
+            using (LogContext.PushProperty("MethodName", ControllerContext.RouteData.Values["action"].ToString()))
+            {
+                _logger.LogInformation($"Received POST request to {ControllerContext.RouteData.Values["action"]}");
+            }
 
             await EnsureModel(model);
 
@@ -117,6 +124,11 @@ namespace CDR.DataRecipient.Web.Controllers
         [Route("callback")]
         public async Task<IActionResult> Callback()
         {
+            using (LogContext.PushProperty("MethodName", ControllerContext.RouteData.Values["action"].ToString()))
+            {
+                _logger.LogInformation($"Received GET request to {ControllerContext.RouteData.Values["action"]}");
+            }
+
             var model = new TokenModel();
             var isSuccessful = this.Request.Method.Equals("post", StringComparison.OrdinalIgnoreCase) && this.Request.Form != null && this.Request.Form.ContainsKey("id_token");
 
@@ -178,6 +190,11 @@ namespace CDR.DataRecipient.Web.Controllers
         [Route("consents")]
         public async Task<IActionResult> Consents()
         {
+            using (LogContext.PushProperty("MethodName", ControllerContext.RouteData.Values["action"].ToString()))
+            {
+                _logger.LogInformation($"Received GET request to {ControllerContext.RouteData.Values["action"]}");
+            }
+
             var model = new ConsentsModel();
             model.ConsentArrangements = await _consentsRepository.GetConsents();
             return View(model);
@@ -187,7 +204,10 @@ namespace CDR.DataRecipient.Web.Controllers
         [Route("userinfo/{cdrArrangementId}")]
         public async Task<IActionResult> UserInfo(string cdrArrangementId)
         {
-            _logger.LogInformation($"GET request: {nameof(ConsentController)}.{nameof(UserInfo)} - {cdrArrangementId}");
+            using (LogContext.PushProperty("MethodName", ControllerContext.RouteData.Values["action"].ToString()))
+            {
+                _logger.LogInformation($"Received GET request  to {ControllerContext.RouteData.Values["action"]}");
+            }
 
             var reg = await GetUserInfo(cdrArrangementId);
             var response = new
@@ -207,7 +227,10 @@ namespace CDR.DataRecipient.Web.Controllers
         [Route("introspection/{cdrArrangementId}")]
         public async Task<IActionResult> Introspection(string cdrArrangementId)
         {
-            _logger.LogInformation($"GET request: {nameof(ConsentController)}.{nameof(Introspection)} - {cdrArrangementId}");
+            using (LogContext.PushProperty("MethodName", ControllerContext.RouteData.Values["action"].ToString()))
+            {
+                _logger.LogInformation($"Received GET request to {ControllerContext.RouteData.Values["action"]}");
+            }
 
             var reg = await GetIntrospection(cdrArrangementId);
             var response = new
@@ -227,7 +250,10 @@ namespace CDR.DataRecipient.Web.Controllers
         [Route("revoke/{cdrArrangementId}")]
         public async Task<IActionResult> Revoke(string cdrArrangementId)
         {
-            _logger.LogInformation($"GET request: {nameof(ConsentController)}.{nameof(Revoke)} - {cdrArrangementId}");
+            using (LogContext.PushProperty("MethodName", ControllerContext.RouteData.Values["action"].ToString()))
+            {
+                _logger.LogInformation($"Received GET request  to {ControllerContext.RouteData.Values["action"]}");
+            }
 
             var reg = await RevokeArrangement(cdrArrangementId);
             var response = new
@@ -247,7 +273,10 @@ namespace CDR.DataRecipient.Web.Controllers
         [Route("revoke-token/{cdrArrangementId}")]
         public async Task<IActionResult> Revoke(string cdrArrangementId, [FromQuery] string tokenType)
         {
-            _logger.LogInformation($"GET request: {nameof(ConsentController)}.{nameof(Revoke)} - {cdrArrangementId}, {tokenType}");
+            using (LogContext.PushProperty("MethodName", ControllerContext.RouteData.Values["action"].ToString()))
+            {
+                _logger.LogInformation($"Received GET request  to {ControllerContext.RouteData.Values["action"]}");
+            }
 
             var reg = await RevokeToken(cdrArrangementId, tokenType);
             var response = new
@@ -267,7 +296,10 @@ namespace CDR.DataRecipient.Web.Controllers
         [Route("refresh/{cdrArrangementId}")]
         public async Task<IActionResult> Refresh(string cdrArrangementId)
         {
-            _logger.LogInformation($"GET request: {nameof(ConsentController)}.{nameof(RefreshAccessToken)} - {cdrArrangementId}");
+            using (LogContext.PushProperty("MethodName", ControllerContext.RouteData.Values["action"].ToString()))
+            {
+                _logger.LogInformation($"Received GET request to {ControllerContext.RouteData.Values["action"]}");
+            }
 
             var reg = await RefreshAccessToken(cdrArrangementId);
             var response = new
@@ -287,7 +319,10 @@ namespace CDR.DataRecipient.Web.Controllers
         [Route("consents/{cdrArrangementId}")]
         public async Task<IActionResult> Delete(string cdrArrangementId)
         {
-            _logger.LogInformation($"DELETE request: {nameof(ConsentController)}.{nameof(Delete)} - {cdrArrangementId}");
+            using (LogContext.PushProperty("MethodName", ControllerContext.RouteData.Values["action"].ToString()))
+            {
+                _logger.LogInformation($"Received DELETE request to {ControllerContext.RouteData.Values["action"]}");
+            }
 
             await _consentsRepository.DeleteConsent(cdrArrangementId);
 

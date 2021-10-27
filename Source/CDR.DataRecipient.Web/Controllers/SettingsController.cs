@@ -6,6 +6,7 @@ using CDR.DataRecipient.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Serilog.Context;
 
 namespace CDR.DataRecipient.Web.Controllers
 {
@@ -23,6 +24,11 @@ namespace CDR.DataRecipient.Web.Controllers
 
         public IActionResult Index()
         {
+            using (LogContext.PushProperty("MethodName", ControllerContext.RouteData.Values["action"].ToString()))
+            {
+                _logger.LogInformation($"Received request to {ControllerContext.RouteData.Values["action"]}");
+            }
+
             var model = new SettingsModel();
             PopulateSettings(model);
             return View(model);

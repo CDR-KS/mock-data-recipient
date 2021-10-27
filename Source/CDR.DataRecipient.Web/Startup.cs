@@ -1,15 +1,16 @@
 using CDR.DataRecipient.Repository;
+using CDR.DataRecipient.Repository.SQL;
 using CDR.DataRecipient.SDK.Services.DataHolder;
+using CDR.DataRecipient.SDK.Services.Register;
 using CDR.DataRecipient.SDK.Services.Tokens;
 using CDR.DataRecipient.Web.Common;
+using CDR.DataRecipient.Web.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using CDR.DataRecipient.SDK.Services.Register;
-using CDR.DataRecipient.Repository.SQLite;
-using CDR.DataRecipient.Web.Middleware;
+using Serilog;
 
 namespace CDR.DataRecipient.Web
 {
@@ -20,7 +21,7 @@ namespace CDR.DataRecipient.Web
 			Configuration = configuration;
 
             // Force database to be created early since it's needed by integration tests for arrangement
-            _ = new SqliteDataAccess(Configuration);
+            _ = new SqlDataAccess(Configuration);
 		}
 
 		public IConfiguration Configuration { get; }
@@ -34,10 +35,10 @@ namespace CDR.DataRecipient.Web
             services.AddTransient<IMetadataService, MetadataService>();
             services.AddTransient<ISsaService, SsaService>();
             services.AddTransient<IDynamicClientRegistrationService, DynamicClientRegistrationService>();
-			services.AddSingleton<ISqliteDataAccess>(x => new SqliteDataAccess(Configuration));
-			services.AddSingleton<IDataHoldersRepository>(x => new SqliteDataHoldersRepository(Configuration));
-			services.AddSingleton<IConsentsRepository>(x => new SqliteConsentsRepository(Configuration));
-			services.AddSingleton<IRegistrationsRepository>(x => new SqliteRegistrationsRepository(Configuration));
+			services.AddSingleton<ISqlDataAccess>(x => new SqlDataAccess(Configuration));
+			services.AddSingleton<IDataHoldersRepository>(x => new SqlDataHoldersRepository(Configuration));
+			services.AddSingleton<IConsentsRepository>(x => new SqlConsentsRepository(Configuration));
+			services.AddSingleton<IRegistrationsRepository>(x => new SqlRegistrationsRepository(Configuration));
 			services.AddTransient<SDK.Services.DataHolder.IInfosecService, SDK.Services.DataHolder.InfosecService>();
             services.AddMemoryCache();
 			services.AddSingleton<IDataHolderDiscoveryCache, DataHolderDiscoveryCache>();			
@@ -55,7 +56,11 @@ namespace CDR.DataRecipient.Web
 				app.UseExceptionHandler("/Home/Error");
 				app.UseHsts();
 			}
+
+			app.UseSerilogRequestLogging();
+
 			app.UseHttpsRedirection();
+
 			app.UseStaticFiles();
 
 			app.UseRouting();

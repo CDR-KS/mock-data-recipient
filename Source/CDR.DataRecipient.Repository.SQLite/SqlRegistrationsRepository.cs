@@ -1,31 +1,31 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using CDR.DataRecipient.SDK.Models;
+﻿using CDR.DataRecipient.SDK.Models;
 using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace CDR.DataRecipient.Repository.SQLite
+namespace CDR.DataRecipient.Repository.SQL
 {
-    public class SqliteRegistrationsRepository : IRegistrationsRepository
+    public class SqlRegistrationsRepository : IRegistrationsRepository
     {
         protected readonly IConfiguration _config;
 
-        public SqliteDataAccess SqliteDataAccess { get; }
+        public SqlDataAccess _sqlDataAccess { get; }
 
-        public SqliteRegistrationsRepository(IConfiguration config) 
+        public SqlRegistrationsRepository(IConfiguration config) 
         {
             _config = config;
-            SqliteDataAccess = new SqliteDataAccess(_config);
+            _sqlDataAccess = new SqlDataAccess(_config);
         }
 
         public async Task<Registration> GetRegistration(string clientId)
         {                        
-            var registration = await SqliteDataAccess.GetRegistration(clientId);
+            var registration = await _sqlDataAccess.GetRegistration(clientId);
             return registration;            
         }
 
         public async Task<IEnumerable<Registration>> GetRegistrations()
         {            
-            var registration = await SqliteDataAccess.GetRegistrations();
+            var registration = await _sqlDataAccess.GetRegistrations();
             return registration;
         }
 
@@ -36,7 +36,7 @@ namespace CDR.DataRecipient.Repository.SQLite
             //Delete existing data. 
             if (!string.IsNullOrEmpty(registration?.ClientId))
             {
-                await SqliteDataAccess.DeleteRegistration(clientId);
+                await _sqlDataAccess.DeleteRegistration(clientId);
             }
         }
 
@@ -46,7 +46,7 @@ namespace CDR.DataRecipient.Repository.SQLite
 
             if (string.IsNullOrEmpty(registration?.ClientId))
             {
-                await SqliteDataAccess.InsertRegistration(_registration);
+                await _sqlDataAccess.InsertRegistration(_registration);
             }
             return;
         }
@@ -58,7 +58,7 @@ namespace CDR.DataRecipient.Repository.SQLite
             //Update existing data. 
             if (!string.IsNullOrEmpty(_registration?.ClientId))
             {
-                await SqliteDataAccess.UpdateRegistration(registration);
+                await _sqlDataAccess.UpdateRegistration(registration);
             }
         }
     }

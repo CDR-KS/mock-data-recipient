@@ -8,6 +8,7 @@ using CDR.DataRecipient.Web.Filters;
 using CDR.DataRecipient.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Serilog.Context;
 
 namespace CDR.DataRecipient.Web.Controllers
 {
@@ -33,8 +34,11 @@ namespace CDR.DataRecipient.Web.Controllers
 		[MustConsume("application/x-www-form-urlencoded")]
 		public async Task<IActionResult> Revoke([Required, FromForm] RevocationModel revocationModel)
 		{
-			_logger.LogInformation($"Request received to {nameof(RevocationController)}.{nameof(Revoke)}");
-			
+			using (LogContext.PushProperty("MethodName", ControllerContext.RouteData.Values["action"].ToString()))
+			{
+				_logger.LogInformation($"Received POST request to {ControllerContext.RouteData.Values["action"]}");
+			}
+
 			if (string.IsNullOrEmpty(revocationModel.CdrArrangementId))
 			{
 				return BadRequest(new ErrorListModel(Constants.ErrorCodes.MissingField, Constants.ErrorTitles.MissingField, "cdr_arrangement_id"));

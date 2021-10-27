@@ -1,7 +1,6 @@
+using Microsoft.Data.SqlClient;
 using System;
 using System.Threading.Tasks;
-using FluentAssertions;
-using Microsoft.Data.Sqlite;
 using Xunit;
 
 #nullable enable
@@ -114,10 +113,10 @@ namespace CDR.DataRecipient.E2ETests
         {
             static string GetClientId()
             {
-                using var mdrConnection = new SqliteConnection(BaseTest.DATARECIPIENT_CONNECTIONSTRING);
+                using var mdrConnection = new SqlConnection(BaseTest.DATARECIPIENT_CONNECTIONSTRING);
                 mdrConnection.Open();
 
-                using var selectCommand = new SqliteCommand($"select clientid from registration", mdrConnection);
+                using var selectCommand = new SqlCommand($"select clientid from registration", mdrConnection);
                 string? clientId = Convert.ToString(selectCommand.ExecuteScalar());
 
                 if (String.IsNullOrEmpty(clientId))

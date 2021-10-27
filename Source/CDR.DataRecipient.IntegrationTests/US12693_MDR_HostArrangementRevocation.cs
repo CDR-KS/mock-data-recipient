@@ -1,15 +1,15 @@
+using CDR.DataRecipient.IntegrationTests.Infrastructure.API2;
+using CDR.DataRecipient.SDK.Models;
+using FluentAssertions;
+using FluentAssertions.Execution;
+using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using CDR.DataRecipient.SDK.Models;
-using FluentAssertions;
-using FluentAssertions.Execution;
 using Xunit;
-using CDR.DataRecipient.IntegrationTests.Infrastructure.API2;
-using Microsoft.Data.Sqlite;
 
 #nullable enable
 
@@ -98,11 +98,11 @@ namespace CDR.DataRecipient.IntegrationTests
             void PersistDataHolderBrands(List<DataHolderBrand> brandList)
             {
                 // Connect
-                using var connection = new SqliteConnection(BaseTest.DATARECIPIENT_CONNECTIONSTRING);
+                using var connection = new SqlConnection(BaseTest.DATARECIPIENT_CONNECTIONSTRING);
                 connection.Open();
 
                 // Purge table
-                using var deleteCommand = new SqliteCommand($"delete from dataholderbrand", connection);
+                using var deleteCommand = new SqlCommand($"delete from dataholderbrand", connection);
                 deleteCommand.ExecuteNonQuery();
 
                 // Save each brand
@@ -110,14 +110,14 @@ namespace CDR.DataRecipient.IntegrationTests
                 {
                     var jsonDocument = System.Text.Json.JsonSerializer.Serialize(brand);
 
-                    using var insertCommand = new SqliteCommand($"insert into dataholderbrand (dataholderbrandid, jsondocument) values (@dataholderbrandid, @jsondocument)", connection);
+                    using var insertCommand = new SqlCommand($"insert into dataholderbrand (dataholderbrandid, jsondocument) values (@dataholderbrandid, @jsondocument)", connection);
                     insertCommand.Parameters.AddWithValue("@dataholderbrandid", brand.DataHolderBrandId);
                     insertCommand.Parameters.AddWithValue("@jsondocument", jsonDocument);
                     insertCommand.ExecuteNonQuery();
                 }
 
                 // Check count
-                using var selectCommand = new SqliteCommand($"select count(*) from dataholderbrand", connection);
+                using var selectCommand = new SqlCommand($"select count(*) from dataholderbrand", connection);
                 var count = Convert.ToInt32(selectCommand.ExecuteScalar());
                 if (count != brandList.Count)
                 {
@@ -135,21 +135,21 @@ namespace CDR.DataRecipient.IntegrationTests
                 };
 
                 // Connect
-                using var connection = new SqliteConnection(BaseTest.DATARECIPIENT_CONNECTIONSTRING);
+                using var connection = new SqlConnection(BaseTest.DATARECIPIENT_CONNECTIONSTRING);
                 connection.Open();
 
                 // Purge table
-                using var deleteCommand = new SqliteCommand($"delete from cdrarrangement", connection);
+                using var deleteCommand = new SqlCommand($"delete from cdrarrangement", connection);
                 deleteCommand.ExecuteNonQuery();
 
                 // Save arrangement
                 var jsonDocument = System.Text.Json.JsonSerializer.Serialize(consentArrangement);
-                using var insertCommand = new SqliteCommand($"insert into cdrarrangement (cdrarrangementid, jsondocument) values (@cdrarrangementid, @jsondocument)", connection);
+                using var insertCommand = new SqlCommand($"insert into cdrarrangement (cdrarrangementid, jsondocument) values (@cdrarrangementid, @jsondocument)", connection);
                 insertCommand.Parameters.AddWithValue("@cdrarrangementid", consentArrangement.CdrArrangementId);
                 insertCommand.Parameters.AddWithValue("@jsondocument", jsonDocument);
                 insertCommand.ExecuteNonQuery();
 
-                using var selectCommand = new SqliteCommand($"select count(*) from cdrarrangement", connection);
+                using var selectCommand = new SqlCommand($"select count(*) from cdrarrangement", connection);
                 var count = Convert.ToInt32(selectCommand.ExecuteScalar());
                 if (count != 1)
                 {

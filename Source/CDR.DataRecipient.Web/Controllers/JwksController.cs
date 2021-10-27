@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Serilog.Context;
 
 namespace CDR.DataRecipient.Web.Controllers
 {
@@ -24,7 +25,10 @@ namespace CDR.DataRecipient.Web.Controllers
         [Route("jwks")]
         public IActionResult GetJwks()
         {
-            _logger.LogInformation($"Request received to {nameof(JwksController)}.{nameof(GetJwks)}");
+            using (LogContext.PushProperty("MethodName", ControllerContext.RouteData.Values["action"].ToString()))
+            {
+                _logger.LogInformation($"Received GET request to {ControllerContext.RouteData.Values["action"]}");
+            }
             return Ok(GenerateJwks());
         }
 

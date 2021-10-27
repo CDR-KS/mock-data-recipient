@@ -18,9 +18,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		supervisord.conf = supervisord.conf
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CDR.DataRecipient.Repository.SQLite", "CDR.DataRecipient.Repository.SQLite\CDR.DataRecipient.Repository.SQLite.csproj", "{468788C3-0C9D-4508-8408-BFE15EC18636}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CDR.DataRecipient.Repository.SQL", "CDR.DataRecipient.Repository.SQLite\CDR.DataRecipient.Repository.SQL.csproj", "{468788C3-0C9D-4508-8408-BFE15EC18636}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CDR.DataRecipient.Repository.SQLite.UnitTests", "CDR.DataRecipient.Repository.SQLite.UnitTests\CDR.DataRecipient.Repository.SQLite.UnitTests.csproj", "{8850DADC-3DE2-47FD-B178-1E804D872FFF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CDR.DataRecipient.Repository.SQL.UnitTests", "CDR.DataRecipient.Repository.SQLite.UnitTests\CDR.DataRecipient.Repository.SQL.UnitTests.csproj", "{8850DADC-3DE2-47FD-B178-1E804D872FFF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CDR.DataRecipient.E2ETests", "CDR.DataRecipient.E2ETests\CDR.DataRecipient.E2ETests.csproj", "{B12C2074-2FF3-4693-A465-6BFA586241FB}"
 EndProject
