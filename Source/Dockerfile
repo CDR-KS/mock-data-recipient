@@ -11,7 +11,7 @@ COPY . ./
 FROM build AS publish
 
 COPY ./CDR.DataRecipient.Web/. /app/CDR.DataRecipient.Web
-COPY ./CDR.DataRecipient.Repository.SQLite/. /app/CDR.DataRecipient.Repository.SQLite
+COPY ./CDR.DataRecipient.Repository.SQL/. /app/CDR.DataRecipient.Repository.SQL
 COPY ./CDR.DataRecipient/. /app/CDR.DataRecipient
 COPY ./CDR.DataRecipient.SDK/. /app/CDR.DataRecipient.SDK
 

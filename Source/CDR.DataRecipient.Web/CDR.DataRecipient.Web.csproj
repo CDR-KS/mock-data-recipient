@@ -28,7 +28,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\CDR.DataRecipient.Repository.SQLite\CDR.DataRecipient.Repository.SQL.csproj" />
+	  <ProjectReference Include="..\CDR.DataRecipient.Repository.SQL\CDR.DataRecipient.Repository.SQL.csproj" />
 	  <ProjectReference Include="..\CDR.DataRecipient.SDK\CDR.DataRecipient.SDK.csproj" />
 	  <ProjectReference Include="..\CDR.DataRecipient\CDR.DataRecipient.csproj" />
 	</ItemGroup>

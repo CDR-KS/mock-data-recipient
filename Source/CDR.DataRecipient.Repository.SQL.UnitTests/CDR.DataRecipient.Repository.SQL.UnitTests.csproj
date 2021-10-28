@@ -43,7 +43,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CDR.DataRecipient.Repository.SQLite\CDR.DataRecipient.Repository.SQL.csproj" />
+    <ProjectReference Include="..\CDR.DataRecipient.Repository.SQL\CDR.DataRecipient.Repository.SQL.csproj" />
   </ItemGroup>
 
 </Project>

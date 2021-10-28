@@ -5,8 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Infrastructure\DataRecipientDatabaseContext.cs" />
-    <Compile Remove="Infrastructure\DataRecipientDatabaseContextDesignTimeFactory.cs" />
+    <Compile Remove="Infrastructure\**" />
+    <EmbeddedResource Remove="Infrastructure\**" />
+    <None Remove="Infrastructure\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,10 +27,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CDR.DataRecipient\CDR.DataRecipient.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Infrastructure\" />
   </ItemGroup>
 
 </Project>
