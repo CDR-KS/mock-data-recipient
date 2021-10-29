@@ -6,7 +6,6 @@ namespace CDR.DataRecipient.Repository.SQL
 {
     public interface ISqlDataAccess
     {
-        bool SqlCreateDatabase();        
         bool RecreateDatabaseWithForTests();
         Task DeleteCdrArrangementData();
         Task DeleteRegistrationData();        
