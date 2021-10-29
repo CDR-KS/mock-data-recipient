@@ -21,9 +21,6 @@ namespace CDR.DataRecipient.Web
 		public Startup(IConfiguration configuration)
 		{
 			Configuration = configuration;
-
-            // Force database to be created early since it's needed by integration tests for arrangement
-//            _ = new SqlDataAccess(Configuration);
 		}
 
 		public IConfiguration Configuration { get; }
