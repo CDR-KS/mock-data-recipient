@@ -62,7 +62,7 @@ namespace CDR.DataRecipient.Web.Controllers
         {
             using (LogContext.PushProperty("MethodName", ControllerContext.RouteData.Values["action"].ToString()))
             {
-                _logger.LogInformation($"Received GET request to {ControllerContext.RouteData.Values["action"]}");
+                _logger.LogInformation($"Received GET request to /dcr/index (Load Data)");
             }
 
             var model = new DynamicClientRegistrationModel();
@@ -86,7 +86,7 @@ namespace CDR.DataRecipient.Web.Controllers
         {
             using (LogContext.PushProperty("MethodName", ControllerContext.RouteData.Values["action"].ToString()))
             {
-                _logger.LogInformation($"Received POST request to {ControllerContext.RouteData.Values["action"]}");
+                _logger.LogInformation($"Received POST request to /dcr/Index (Create/Update Registration)");
             }
 
             if (string.IsNullOrEmpty(model.ClientId))
@@ -108,7 +108,7 @@ namespace CDR.DataRecipient.Web.Controllers
         {
             using (LogContext.PushProperty("MethodName", ControllerContext.RouteData.Values["action"].ToString()))
             {
-                _logger.LogInformation($"Received DELETE request to {ControllerContext.RouteData.Values["action"]} - {clientId}");
+                _logger.LogInformation($"Received DELETE request to Delete /registrations - {clientId}");
             }
 
             // Delete the registration from the data holder.
@@ -138,7 +138,7 @@ namespace CDR.DataRecipient.Web.Controllers
         {
             using (LogContext.PushProperty("MethodName", ControllerContext.RouteData.Values["action"].ToString()))
             {
-                _logger.LogInformation($"Received GET request to {ControllerContext.RouteData.Values["action"]} - {clientId}");
+                _logger.LogInformation($"Received GET request to /registrations - {clientId}");
             }
 
             var reg = await GetRegistration(clientId);
