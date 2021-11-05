@@ -1,3 +1,4 @@
+using CDR.DataRecipient.Infrastructure;
 using CDR.DataRecipient.Repository;
 using CDR.DataRecipient.Repository.SQL;
 using CDR.DataRecipient.SDK.Services.DataHolder;
@@ -7,6 +8,7 @@ using CDR.DataRecipient.Web.Common;
 using CDR.DataRecipient.Web.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -19,9 +21,6 @@ namespace CDR.DataRecipient.Web
 		public Startup(IConfiguration configuration)
 		{
 			Configuration = configuration;
-
-            // Force database to be created early since it's needed by integration tests for arrangement
-            _ = new SqlDataAccess(Configuration);
 		}
 
 		public IConfiguration Configuration { get; }
@@ -29,7 +28,8 @@ namespace CDR.DataRecipient.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+			services.AddDbContext<RecipientDatabaseContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+			services.AddControllersWithViews();
             services.AddTransient<SDK.Services.Register.IInfosecService, SDK.Services.Register.InfosecService>();
             services.AddTransient<IAccessTokenService, AccessTokenService>();
             services.AddTransient<IMetadataService, MetadataService>();
@@ -86,6 +86,13 @@ namespace CDR.DataRecipient.Web
 					name: "default",
 					pattern: "{controller=Home}/{action=Index}/{id?}");
 			});
+
+			// Migrate the database to the latest version during application startup.
+			using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+			{
+				var context = serviceScope.ServiceProvider.GetRequiredService<RecipientDatabaseContext>();
+				context.Database.Migrate();
+			}
 		}
 	}
 }

@@ -43,7 +43,7 @@ namespace CDR.DataRecipient.Web.Controllers
         {
             using (LogContext.PushProperty("MethodName", ControllerContext.RouteData.Values["action"].ToString()))
             {
-                _logger.LogInformation($"Received GET request to {ControllerContext.RouteData.Values["action"]}");
+                _logger.LogInformation($"Received GET request to /data-holders");
             }
 
             var model = new DataHoldersModel();
@@ -56,7 +56,7 @@ namespace CDR.DataRecipient.Web.Controllers
         {
             using (LogContext.PushProperty("MethodName", ControllerContext.RouteData.Values["action"].ToString()))
             {
-                _logger.LogInformation($"Received POST request to {ControllerContext.RouteData.Values["action"]}");
+                _logger.LogInformation($"Received POST request to /data-holders");
             }
 
             await GetDataHolderBrands(model);
